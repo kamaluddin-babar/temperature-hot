@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Temperature Hot</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background: url(images/bg-image.jpg) no-repeat;
+            background-size: cover;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form class="col-md-6 m-auto py-5">
+            <div class="input-group mb-3">
+                <input id="city-name-input" type="text" class="form-control" placeholder="Enter a location for Weather ...">
+                <div class="input-group-append">
+                    <button id="search-btn" type="button" class="btn btn-danger">Search</button>
+                </div>
+            </div>
+        </form>
+        <div class="weather-status text-white text-center">
+            <img src="https://openweathermap.org/img/wn/02d@2x.png" alt="">
+            <h1 id="city">Dhaka</h1>
+            <h3><span id="temperature">38.06</span>&deg;C</h3>
+            <h1 id="status" class="lead">Clouds</h1>
+        </div>
+    </div>
+
+
+    <script>
+
+        const searchBtn = document.getElementById("search-btn");
+        searchBtn.addEventListener("click", function(){
+            const selectInputField = document.getElementById("city-name-input");
+            const cityName = selectInputField.value;
+
+            getWeatherStatus(cityName);
+            selectInputField.value = "";
+        });
+
+        function getWeatherStatus(city) {
+            fetch('https://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=07c50a13ff9dcc2e6c7e7483b219cb6c')
+            .then(res => res.json())
+            .then(data => {
+                const city = data.name;
+                const temperature = data.main.temp;
+                const tempInCelsius = kelvinToCelsius(temperature);
+                const status = data.weather[0].main;
+
+                document.getElementById("city").innerText = city;
+                document.getElementById("temperature").innerText = tempInCelsius;
+                document.getElementById("status").innerText = status;
+                
+                console.log(city, temperature, status);
+                console.log(data);
+            })
+        .catch(error => console.log("No city found!"))
+        }
+
+        function kelvinToCelsius(kelvin) {
+            const celsius = kelvin - 273.15;
+            return celsius.toFixed(2);
+        }
+    </script>
+
+</body>
+
+</html>
